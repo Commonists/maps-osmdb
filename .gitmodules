@@ -1,0 +1,3 @@
+[submodule "osmdbt"]
+	path = osmdbt
+	url = https://github.com/openstreetmap/osmdbt.git
