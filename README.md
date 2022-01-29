@@ -63,53 +63,26 @@ sudo su - postgres -c 'createdb gis'
 curl https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/db/structure.sql | sudo su - postgres - -c 'psql gis'
 ```
 
-## `osmdbt`
-
-Build and set up the OSM replication tools
-
-### Prerequisites
+### Install osmosis
 
 ```
-sudo apt install -y libosmium2-dev libprotozero-dev libboost-filesystem-dev libboost-program-options-dev libbz2-dev zlib1g-dev libexpat1-dev cmake libyaml-cpp-dev libpqxx-dev pandoc gettext-base postgresql-common postgresql-server-dev-all devscripts
+sudo apt install -y osmosis
 ```
 
-## `osmdbt`
-
-Build the OSM replication tools
+### Build `osmupdate`
 
 ```
-git submodule update --init
-cd osmdbt
+wget -O - http://m.m.i24.cc/osmupdate.c | cc -x c - -o osmupdate
 ```
 
-compile according to the instructions in `osmdbt/README.md`
+## Initial import
+
+### Download weekly Planet .osm.pbf file
 
 ```
-mkdir build
-cd build
-cmake ..
-cmake --build .
-
-```
-
-## Build `osm-locgical` plugin
-
-```
-cd osm-logical
-make
-sudo make install
-```
-
-## Setup replicate user
-
-Create user
-
-```
-echo "CREATE USER replicate WITH REPLICATION LOGIN;" | sudo su - postgres - -c psql
+wget https://ftp.osuosl.org/pub/openstreetmap/pbf/planet-latest.osm.pbf
 ```
 
 ```
-echo "GRANT SELECT ON ALL TABLES IN SCHEMA public TO replicate; | sudo su - postgres - -c 'psql gis'
+osmosis --read-pbf planet-latest.osm.pbf --write-apidb host="localhost" database="gis" user="$psql_username" password="$psql_password" validateSchemaVersion="no"
 ```
-
-
