@@ -1,3 +1,6 @@
 [submodule "osmdbt"]
 	path = osmdbt
 	url = https://github.com/openstreetmap/osmdbt.git
+[submodule "osm-logical"]
+	path = osm-logical
+	url = https://github.com/zerebubuth/osm-logical

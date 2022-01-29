@@ -70,7 +70,7 @@ Build and set up the OSM replication tools
 ### Prerequisites
 
 ```
-sudo apt install -y libosmium2-dev libprotozero-dev libboost-filesystem-dev libboost-program-options-dev libbz2-dev zlib1g-dev libexpat1-dev cmake libyaml-cpp-dev libpqxx-dev pandoc gettext-base postgresql-common postgresql-server-dev-all
+sudo apt install -y libosmium2-dev libprotozero-dev libboost-filesystem-dev libboost-program-options-dev libbz2-dev zlib1g-dev libexpat1-dev cmake libyaml-cpp-dev libpqxx-dev pandoc gettext-base postgresql-common postgresql-server-dev-all devscripts
 ```
 
 ## `osmdbt`
@@ -89,5 +89,27 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
+
 ```
+
+## Build `osm-locgical` plugin
+
+```
+cd osm-logical
+make
+sudo make install
+```
+
+## Setup replicate user
+
+Create user
+
+```
+echo "CREATE USER replicate WITH REPLICATION LOGIN;" | sudo su - postgres - -c psql
+```
+
+```
+echo "GRANT SELECT ON ALL TABLES IN SCHEMA public TO replicate; | sudo su - postgres - -c 'psql gis'
+```
+
 
