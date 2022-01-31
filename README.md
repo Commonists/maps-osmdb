@@ -20,7 +20,7 @@ Take note of the UUID of the new partition and add it to `/etc/fstab` mounted at
 ## Install Postgres
 
 ```
-sudo apt install postgresql postgresql-contrib
+sudo apt install postgresql postgresql-contrib postgis
 ```
 
 ### Change data directory
@@ -34,20 +34,20 @@ sudo usermod -d /volume/postgresql postgres
 sudo vim /etc/postgresql/13/main/postgresql.conf
 ```
 
-and change the following lines
+and set the following options
 
 ```
-data_directory = '/var/lib/postgresql/13/main'         # use data in another directory
-#wal_level = replica                    # minimal, replica, or logical
-#max_replication_slots = 10      # max number of replication slots
-```
-
-to
-
-```
-data_directory = '/volume/postgresql/13/main'           # use data in another directory
-wal_level = logical                     # minimal, replica, or logical
-max_replication_slots = 10      # max number of replication slots
+data_directory = '/volume/postgresql/13/main'
+shared_buffers = 1GB
+work_mem = 50MB
+maintenance_work_mem = 10GB
+autovacuum_work_mem = 2GB
+wal_level = minimal
+checkpoint_timeout = 60min
+max_wal_size = 10GB
+checkpoint_completuion_target = 0.9
+max_wal_senders = 0
+random_page_cost = 1.0
 ```
 
 then restart Postgres. Note that the paths above contain the Postgres version (in this case `13`)!
@@ -63,10 +63,10 @@ sudo su - postgres -c 'createdb gis'
 curl https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/db/structure.sql | sudo su - postgres - -c 'psql gis'
 ```
 
-### Install osmosis
+### Install `osmosis` and `osm2pgsql`
 
 ```
-sudo apt install -y osmosis
+sudo apt install -y osmosis osm2pgsql osmctools
 ```
 
 ### Build `osmupdate`
@@ -86,3 +86,8 @@ wget https://ftp.osuosl.org/pub/openstreetmap/pbf/planet-latest.osm.pbf
 ```
 osmosis --read-pbf planet-latest.osm.pbf --write-apidb host="localhost" database="gis" user="$psql_username" password="$psql_password" validateSchemaVersion="no"
 ```
+
+
+## References
+
+* https://ircama.github.io/osm-carto-tutorials/updating-data/
