@@ -20,7 +20,7 @@ Take note of the UUID of the new partition and add it to `/etc/fstab` mounted at
 ## Install Postgres
 
 ```
-sudo apt install postgresql postgresql-contrib postgis
+sudo apt install postgresql postgresql-contrib postgis postgresql-13-postgis-3
 ```
 
 ### Change data directory
@@ -61,12 +61,28 @@ sudo systemctl start postgresql.service
 ```
 sudo su - postgres -c 'createdb gis'
 curl https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/db/structure.sql | sudo su - postgres - -c 'psql gis'
+echo 'CREATE EXTENSION postgis;' | sudo su - postgres - -c 'psql gis'
+echo 'CREATE EXTENSION hstore;' | sudo su - postgres - -c 'psql gis'
 ```
 
-### Install `osmosis` and `osm2pgsql`
+### Build `osm2pgsql`
+
+Install prerequisites
 
 ```
-sudo apt install -y osmosis osm2pgsql osmctools
+sudo apt-get install make cmake g++ libboost-dev libboost-system-dev \
+  libboost-filesystem-dev libexpat1-dev zlib1g-dev \
+  libbz2-dev libpq-dev libproj-dev lua5.3 liblua5.3-dev pandoc python3-pyosmium python3-psycopg2
+```
+
+configure and build
+
+```
+cd osm2pgsql
+mkdir build && cd build
+cmake ..
+make
+sudo make install
 ```
 
 ### Build `osmupdate`
@@ -83,10 +99,30 @@ wget -O - http://m.m.i24.cc/osmupdate.c | cc -x c - -o osmupdate
 wget https://ftp.osuosl.org/pub/openstreetmap/pbf/planet-latest.osm.pbf
 ```
 
+an old planet pbf can be made current with `osmupdate`
+
 ```
-osmosis --read-pbf planet-latest.osm.pbf --write-apidb host="localhost" database="gis" user="$psql_username" password="$psql_password" validateSchemaVersion="no"
+./osmupdate --day --hour planet-latest.osm.pbf planet-latest2.osm.pbf
+mv planet-latest2.osm.pbf planet-latest.osm.pbf
 ```
 
+### Import pbf into postgres
+
+```
+osm2pgsql -c -s planet-latest.osm.pbf -d gis
+```
+
+### Initialize replication
+
+```
+osm2pgsql-replication init -d gis
+```
+
+### Replication
+
+```
+osm2pgsql-replication update -d gis
+```
 
 ## References
 
