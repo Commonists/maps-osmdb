@@ -95,11 +95,13 @@ wget -O - http://m.m.i24.cc/osmupdate.c | cc -x c - -o osmupdate
 
 ### Download weekly Planet .osm.pbf file
 
+The following command will download about 65GB of data (as of early 2022)
+
 ```
 wget https://ftp.osuosl.org/pub/openstreetmap/pbf/planet-latest.osm.pbf
 ```
 
-an old planet pbf can be made current with `osmupdate`
+an old planet pbf can be made current with `osmupdate` (this step can take a few hours)
 
 ```
 ./osmupdate --day --hour planet-latest.osm.pbf planet-latest2.osm.pbf
