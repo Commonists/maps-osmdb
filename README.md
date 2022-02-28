@@ -126,6 +126,14 @@ osm2pgsql-replication init -d gis
 osm2pgsql-replication update -d gis
 ```
 
+## Test the database
+
+Run a test query to check if the data has been imported correctly
+
+```
+select ST_AsGeoJSON( ST_Transform( ST_Intersection( way, ST_SetSRID('BOX3D(-8240147.3299792 4970939.2821238, -8239675.9683048 4971561.2155888)'::box3d,3857) ),4326), 9 ), tags, "highway", "railway", "waterway", "landuse", "leisure", "building", "natural", "amenity", "name", "boundary", "osm_id", "layer", "access", "route", "historic", "tunnel", "aeroway", "aerialway", "tourism" from planet_osm_polygon where building IS NULL AND not exist(hstore(tags),'building:part') AND ST_IsValid(way) AND way && ST_SetSRID('BOX3D(-8240147.3299792 4970939.2821238, -8239675.9683048 4971561.2155888)'::box3d,3857);
+```
+
 ## References
 
 * https://ircama.github.io/osm-carto-tutorials/updating-data/
