@@ -111,7 +111,7 @@ mv planet-latest2.osm.pbf planet-latest.osm.pbf
 ### Import pbf into postgres
 
 ```
-osm2pgsql -c -s planet-latest.osm.pbf -d gis
+osm2pgsql -c -s -k planet-latest.osm.pbf -d gis
 ```
 
 ### Initialize replication
