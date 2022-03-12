@@ -1,0 +1,89 @@
+--- postgresql.conf	2022-03-12 15:42:21.843319507 +0000
++++ /etc/postgresql/13/main/postgresql.conf	2022-03-12 15:47:03.302665908 +0000
+@@ -39,7 +39,8 @@
+ # The default values of these variables are driven from the -D command-line
+ # option or PGDATA environment variable, represented here as ConfigDir.
+ 
+-data_directory = '/var/lib/postgresql/13/main'		# use data in another directory
++#data_directory = '/var/lib/postgresql/13/main'		# use data in another directory
++data_directory = '/volume/postgresql/13/main'		# use data in another directory
+ 					# (change requires restart)
+ hba_file = '/etc/postgresql/13/main/pg_hba.conf'	# host-based authentication file
+ 					# (change requires restart)
+@@ -57,7 +58,7 @@
+ 
+ # - Connection Settings -
+ 
+-#listen_addresses = 'localhost'		# what IP address(es) to listen on;
++listen_addresses = '*'			# what IP address(es) to listen on;
+ 					# comma-separated list of addresses;
+ 					# defaults to 'localhost'; use '*' for all
+ 					# (change requires restart)
+@@ -128,7 +129,7 @@
+ 					# (change requires restart)
+ # Caution: it is not advisable to set max_prepared_transactions nonzero unless
+ # you actively intend to use prepared transactions.
+-#work_mem = 4MB				# min 64kB
++work_mem = 50MB				# min 64kB
+ #hash_mem_multiplier = 1.0		# 1-1000.0 multiplier on hash table work_mem
+ #maintenance_work_mem = 64MB		# min 1MB
+ #autovacuum_work_mem = -1		# min 1MB, or -1 to use maintenance_work_mem
+@@ -195,6 +196,8 @@
+ # - Settings -
+ 
+ #wal_level = replica			# minimal, replica, or logical
++#wal_level = minimal			# minimal, replica, or logical
++wal_level = logical			# minimal, replica, or logical
+ 					# (change requires restart)
+ #fsync = on				# flush data to disk for crash safety
+ 					# (turning this off can cause
+@@ -288,13 +291,13 @@
+ 
+ # Set these on the master and on any standby that will send replication data.
+ 
+-#max_wal_senders = 10		# max number of walsender processes
++max_wal_senders = 0		# max number of walsender processes
+ 				# (change requires restart)
+ #wal_keep_size = 0		# in megabytes; 0 disables
+ #max_slot_wal_keep_size = -1	# in megabytes; -1 disables
+ #wal_sender_timeout = 60s	# in milliseconds; 0 disables
+ 
+-#max_replication_slots = 10	# max number of replication slots
++max_replication_slots = 10	# max number of replication slots
+ 				# (change requires restart)
+ #track_commit_timestamp = off	# collect timestamp of transaction commit
+ 				# (change requires restart)
+@@ -561,7 +564,7 @@
+ #log_temp_files = -1			# log temporary files equal or larger
+ 					# than the specified size in kilobytes;
+ 					# -1 disables, 0 logs all temp files
+-log_timezone = 'America/Boise'
++log_timezone = 'Etc/UTC'
+ 
+ #------------------------------------------------------------------------------
+ # PROCESS TITLE
+@@ -678,7 +681,7 @@
+ 
+ datestyle = 'iso, mdy'
+ #intervalstyle = 'postgres'
+-timezone = 'America/Boise'
++timezone = 'Etc/UTC'
+ #timezone_abbreviations = 'Default'     # Select the set of available time zone
+ 					# abbreviations.  Currently, there are
+ 					#   Default
+@@ -692,11 +695,11 @@
+ 					# encoding
+ 
+ # These settings are initialized by initdb, but they can be changed.
+-lc_messages = 'en_US.UTF-8'			# locale for system error message
++lc_messages = 'C.UTF-8'			# locale for system error message
+ 					# strings
+-lc_monetary = 'en_US.UTF-8'			# locale for monetary formatting
+-lc_numeric = 'en_US.UTF-8'			# locale for number formatting
+-lc_time = 'en_US.UTF-8'				# locale for time formatting
++lc_monetary = 'C.UTF-8'			# locale for monetary formatting
++lc_numeric = 'C.UTF-8'			# locale for number formatting
++lc_time = 'C.UTF-8'				# locale for time formatting
+ 
+ # default configuration for text search
+ default_text_search_config = 'pg_catalog.english'
