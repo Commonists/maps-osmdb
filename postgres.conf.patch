@@ -53,24 +53,6 @@
  				# (change requires restart)
  #track_commit_timestamp = off	# collect timestamp of transaction commit
  				# (change requires restart)
-@@ -561,7 +564,7 @@
- #log_temp_files = -1			# log temporary files equal or larger
- 					# than the specified size in kilobytes;
- 					# -1 disables, 0 logs all temp files
--log_timezone = 'America/Boise'
-+log_timezone = 'Etc/UTC'
- 
- #------------------------------------------------------------------------------
- # PROCESS TITLE
-@@ -678,7 +681,7 @@
- 
- datestyle = 'iso, mdy'
- #intervalstyle = 'postgres'
--timezone = 'America/Boise'
-+timezone = 'Etc/UTC'
- #timezone_abbreviations = 'Default'     # Select the set of available time zone
- 					# abbreviations.  Currently, there are
- 					#   Default
 @@ -692,11 +695,11 @@
  					# encoding
  
